@@ -39,8 +39,34 @@ async function run() {
     // Send a ping to confirm a successful connection
     // await client.db('admin').command({ ping: 1 });
 
-    app.get('/allRooms', async (req, res) => {
+    // get all rooms data with price filter
+    app.get('/rooms', async (req, res) => {
+      const minPrice = parseInt(req.query.minRange);
+      const maxPrice = parseInt(req.query.maxRange);
+      console.log(maxPrice, minPrice);
+
+      const query = {
+        price: {
+          $gte: minPrice,
+          $lte: maxPrice,
+        },
+      };
+
+      if (maxPrice > 0 || minPrice > 0) {
+        const result = await roomCollection.find(query).toArray();
+        return res.send(result);
+      }
+
       const result = await roomCollection.find().toArray();
+      res.send(result);
+    });
+
+    // get single room data
+    app.get('/rooms/:_id', async (req, res) => {
+      const id = req.params._id;
+      const query = { _id: new ObjectId(id) };
+      const result = await roomCollection.findOne(query);
+
       res.send(result);
     });
 
