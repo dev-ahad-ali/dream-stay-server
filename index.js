@@ -32,12 +32,17 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    const artCollection = client.db('dream-stay').collection('rooms');
+    const roomCollection = client.db('dream-stay').collection('rooms');
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db('admin').command({ ping: 1 });
+
+    app.get('/allRooms', async (req, res) => {
+      const result = await roomCollection.find().toArray();
+      res.send(result);
+    });
 
     console.log(
       'Pinged your deployment. You successfully connected to MongoDB!'
