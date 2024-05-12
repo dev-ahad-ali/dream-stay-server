@@ -33,6 +33,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const roomCollection = client.db('dream-stay').collection('rooms');
+    const bookingCollection = client.db('dream-stay').collection('booking');
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
@@ -43,7 +44,6 @@ async function run() {
     app.get('/rooms', async (req, res) => {
       const minPrice = parseInt(req.query.minRange);
       const maxPrice = parseInt(req.query.maxRange);
-      console.log(maxPrice, minPrice);
 
       const query = {
         price: {
@@ -67,6 +67,13 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await roomCollection.findOne(query);
 
+      res.send(result);
+    });
+
+    // post booking data
+    app.post('/bookings', async (req, res) => {
+      const booking = req.body;
+      const result = await bookingCollection.insertOne(booking);
       res.send(result);
     });
 
