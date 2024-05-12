@@ -34,6 +34,7 @@ async function run() {
   try {
     const roomCollection = client.db('dream-stay').collection('rooms');
     const bookingCollection = client.db('dream-stay').collection('booking');
+    const reviewCollection = client.db('dream-stay').collection('reviews');
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
@@ -134,6 +135,13 @@ async function run() {
       const id = req.params._id;
       const query = { _id: new ObjectId(id) };
       const result = await bookingCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // post review
+    app.post('/reviews', async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
       res.send(result);
     });
 
