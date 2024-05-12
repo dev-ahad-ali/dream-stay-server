@@ -73,15 +73,26 @@ async function run() {
     // update room availability
     app.patch('/rooms/:_id', async (req, res) => {
       const id = req.params._id;
+      const { booking } = req.body;
       const query = { _id: new ObjectId(id) };
-      const updateDoc = {
-        $set: {
-          available: false,
-        },
-      };
-      const result = await roomCollection.updateOne(query, updateDoc);
 
-      res.send(result);
+      if (booking) {
+        const updateDoc = {
+          $set: {
+            available: false,
+          },
+        };
+        const result = await roomCollection.updateOne(query, updateDoc);
+        res.send(result);
+      } else {
+        const updateDoc = {
+          $set: {
+            available: true,
+          },
+        };
+        const result = await roomCollection.updateOne(query, updateDoc);
+        res.send(result);
+      }
     });
 
     // post booking data
