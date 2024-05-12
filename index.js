@@ -70,6 +70,20 @@ async function run() {
       res.send(result);
     });
 
+    // update room availability
+    app.patch('/rooms/:_id', async (req, res) => {
+      const id = req.params._id;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          available: false,
+        },
+      };
+      const result = await roomCollection.updateOne(query, updateDoc);
+
+      res.send(result);
+    });
+
     // post booking data
     app.post('/bookings', async (req, res) => {
       const booking = req.body;
