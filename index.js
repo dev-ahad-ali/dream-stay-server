@@ -102,6 +102,22 @@ async function run() {
       res.send(result);
     });
 
+    // update bookings data
+    app.patch('/bookings/:_id', async (req, res) => {
+      const id = req.params._id;
+      const { dateString } = req.body;
+      const updateDoc = {
+        $set: {
+          date: dateString,
+        },
+      };
+      const query = { _id: new ObjectId(id) };
+
+      const result = await bookingCollection.updateOne(query, updateDoc);
+
+      res.send(result);
+    });
+
     console.log(
       'Pinged your deployment. You successfully connected to MongoDB!'
     );
