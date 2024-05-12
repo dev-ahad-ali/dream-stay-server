@@ -145,6 +145,17 @@ async function run() {
       res.send(result);
     });
 
+    // get reviews for room
+    app.get('/reviews/:_id', async (req, res) => {
+      const id = req.params._id;
+      const query = {
+        roomId: id,
+      };
+      const result = await reviewCollection.find(query).toArray();
+
+      res.send(result);
+    });
+
     console.log(
       'Pinged your deployment. You successfully connected to MongoDB!'
     );
