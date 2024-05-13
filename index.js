@@ -204,7 +204,10 @@ async function run() {
       const query = {
         roomId: id,
       };
-      const result = await reviewCollection.find(query).toArray();
+      const result = await reviewCollection
+        .find(query)
+        .sort({ _id: -1 })
+        .toArray();
 
       res.send(result);
     });
