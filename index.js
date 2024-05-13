@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 //config
@@ -15,9 +17,12 @@ app.use(
       'https://dream-stay-indev.web.app',
       'https://dream-stay-indev.firebaseapp.com',
     ],
+    credentials: true,
+    optionsSuccessStatus: 200,
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rocppxe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
