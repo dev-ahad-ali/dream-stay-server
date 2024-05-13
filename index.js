@@ -46,6 +46,22 @@ async function run() {
     // Send a ping to confirm a successful connection
     // await client.db('admin').command({ ping: 1 });
 
+    // create jwt
+    app.post('/jwt', async (req, res) => {
+      const email = req.body;
+      const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: '30d',
+      });
+
+      res
+        .cookie('token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+        })
+        .send({ success: true });
+    });
+
     // get all rooms data with price filter
     app.get('/rooms', async (req, res) => {
       const minPrice = parseInt(req.query.minRange);
