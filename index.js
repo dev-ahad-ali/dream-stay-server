@@ -62,6 +62,18 @@ async function run() {
         .send({ success: true });
     });
 
+    // clear token on logout
+    app.get('/logout', (req, res) => {
+      res
+        .clearCookie('token', {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+          maxAge: 0,
+        })
+        .send({ success: true });
+    });
+
     // get all rooms data with price filter
     app.get('/rooms', async (req, res) => {
       const minPrice = parseInt(req.query.minRange);
