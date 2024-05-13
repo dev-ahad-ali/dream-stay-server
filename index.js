@@ -24,6 +24,22 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+// token verify middleware
+const verifyToken = (req, res, next) => {
+  const token = req?.cookie?.token;
+  if (!token) return res.status(401).send({ message: 'unauthorized access' });
+  if (token) {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+      if (err) {
+        return req.status(401).send({ message: 'unauthorized access' });
+      }
+
+      req.user = decoded;
+      next();
+    });
+  }
+};
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rocppxe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -137,8 +153,12 @@ async function run() {
     });
 
     // get bookings data
-    app.get('/bookings/:email', async (req, res) => {
+    app.get('/bookings/:email', verifyToken, async (req, res) => {
+      const tokenEmail = req.user.email;
       const email = req.params.email;
+      if (tokenEmail !== email) {
+        return res.status(403).send({ message: 'forbidden access' });
+      }
       const query = {
         email: email,
       };
