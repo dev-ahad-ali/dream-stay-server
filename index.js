@@ -121,7 +121,7 @@ async function run() {
     });
 
     // update room availability
-    app.patch('/rooms/:_id', async (req, res) => {
+    app.patch('/rooms/:_id', verifyToken, async (req, res) => {
       const id = req.params._id;
       const { booking } = req.body;
       const query = { _id: new ObjectId(id) };
