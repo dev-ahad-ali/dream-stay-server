@@ -146,7 +146,7 @@ async function run() {
     });
 
     // post booking data
-    app.post('/bookings', async (req, res) => {
+    app.post('/bookings', verifyToken, async (req, res) => {
       const booking = req.body;
       const result = await bookingCollection.insertOne(booking);
       res.send(result);
@@ -168,7 +168,7 @@ async function run() {
     });
 
     // update bookings data
-    app.patch('/bookings/:_id', async (req, res) => {
+    app.patch('/bookings/:_id', verifyToken, async (req, res) => {
       const id = req.params._id;
       const { dateString } = req.body;
       const updateDoc = {
@@ -184,7 +184,7 @@ async function run() {
     });
 
     // delete booking
-    app.delete('/bookings/:_id', async (req, res) => {
+    app.delete('/bookings/:_id', verifyToken, async (req, res) => {
       const id = req.params._id;
       const query = { _id: new ObjectId(id) };
       const result = await bookingCollection.deleteOne(query);
@@ -192,9 +192,15 @@ async function run() {
     });
 
     // post review
-    app.post('/reviews', async (req, res) => {
+    app.post('/reviews', verifyToken, async (req, res) => {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
+      res.send(result);
+    });
+
+    // get reviews
+    app.get('/reviews/', async (req, res) => {
+      const result = await reviewCollection.find().sort({ _id: -1 }).toArray();
       res.send(result);
     });
 
